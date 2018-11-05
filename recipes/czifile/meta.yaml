@@ -24,7 +24,7 @@ requirements:
     - numpy
     - scipy
     - tifffile=2018.10.18
-    - imagecodecs=2018.10.22
+    - imagecodecs=2018.10.30
 
 test:
   imports:

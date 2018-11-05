@@ -1,6 +1,6 @@
 {% set name = "imagecodecs" %}
-{% set version = "2018.10.22" %}
-{% set sha256 = "1786a689a712519f3df862992fcaa31fd8e74538a1371514cc26447116d88d31" %}
+{% set version = "2018.10.30" %}
+{% set sha256 = "ca287985ad0c2a19696e2a97fa524cb467dbbeadc3eda107e595f670b361c451" %}
 
 package:
   name: {{ name|lower }}
@@ -38,6 +38,7 @@ requirements:
     - libjpeg-turbo12
     - openjpeg=2.3
     - blosc=1.14.2
+    - charls
   run:
     - python
     - {{ pin_compatible('numpy') }}
@@ -69,7 +70,7 @@ about:
   description: |
     The imagecodecs package provides various block-oriented, in-memory buffer transformation, compression, and decompression functions for use in the tifffile, czifile, and other Python imaging modules.
 
-    Decode and/or encode functions are currently implemented for Zlib DEFLATE, ZStandard, Blosc, LZMA, BZ2, LZ4, LZW, LZF, PNG, WebP, JPEG 8-bit, JPEG 12-bit, JPEG SOF=0xC3, JPEG 2000, JPEG XR, PackBits, Packed Integers, Delta, XOR Delta, Floating Point Predictor, and Bitorder reversal.
+    Decode and/or encode functions are currently implemented for Zlib DEFLATE, ZStandard, Blosc, LZMA, BZ2, LZ4, LZW, LZF, PNG, WebP, JPEG 8-bit, JPEG 12-bit, JPEG SOF3, JPEG LS, JPEG 2000, JPEG XR, PackBits, Packed Integers, Delta, XOR Delta, Floating Point Predictor, and Bitorder reversal.
   doc_url: https://www.lfd.uci.edu/~gohlke/
   dev_url: https://www.lfd.uci.edu/~gohlke/
 

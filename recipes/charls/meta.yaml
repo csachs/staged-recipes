@@ -1,0 +1,33 @@
+{% set version = "2.0.0" %}
+
+package:
+  name: charls
+  version: {{ version }}
+
+source:
+  url: https://github.com/team-charls/charls/archive/{{ version}}.zip
+  sha256: ad570b2791cf025751b01d67bb5b044e0e1513d0d46f07daf0d56066aff9f231
+
+build:
+  number: 0
+#  run_exports:
+#    - {{ pin_subpackage('charls', max_pin='x') }}
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}
+    - cmake
+    - msinttypes  # [win and py<35]
+    - yasm
+    - jom  # [win]
+
+about:
+  home: https://github.com/team-charls/charls
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: License.txt
+  summary: CharLS, a C++ JPEG-LS library implementation
+
+extra:
+  recipe-maintainers:
+    - csachs

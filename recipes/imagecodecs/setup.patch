@@ -1,6 +1,6 @@
 --- setup_modified.py	2018-10-23 09:42:55.063203772 +0200
 +++ setup_modified.py	2018-10-23 13:22:15.367409506 +0200
-@@ -0,0 +1,155 @@
+@@ -0,0 +1,178 @@
 +# -*- coding: utf-8 -*-
 +# imagecodecs/setup.py
 +
@@ -46,7 +46,7 @@
 +
 +sources = [
 +    'imagecodecs/imagecodecs.c',
-+    'imagecodecs/jpeg_0xc3.cpp',
++    'imagecodecs/jpeg_sof3.cpp',
 +    'imagecodecs/_imagecodecs.pyx',
 +]
 +
@@ -55,22 +55,29 @@
 +    'imagecodecs',
 +]
 +
++
 +if sys.platform == 'win32':
 +    libraries = ['z', 'liblz4', 'libwebp', 'libpng', 'libjxrglue', 'libjpegxr', 'jpeg',
 +                 'libzstd', 'liblzma', 'libbz2', 'openjp2', 'blosc']
-+    define_macros = [('WIN32', 1)]
++    define_macros = [('WIN32', 1), ('CHARLS_STATIC', 1)]
 +    libraries_jpeg12 = ['jpeg12']
 +    extra_link_args = []
++
++    libraries_jpegls = ['CharLS']
++    includes_jpegls = [os.environ.get('LIBRARY_INC','') + '\\CharLS']
 +
 +else:
 +    libraries = ['jpeg', 'lz4', 'zstd', 'lzma', 'bz2', 'png', 'webp',
 +                 'openjp2', 'jxrglue', 'jpegxr', 'z', 'm', 'blosc']
-+    define_macros = []
++    define_macros = [('CHARLS_STATIC', 1)]
 +    libraries_jpeg12 = ['jpeg12']
 +    extra_link_args = ['-shared']
 +
++    libraries_jpegls = ['CharLS']
++    includes_jpegls = [os.environ.get('PREFIX','') + '/include/CharLS']
++
 +    if sys.platform  == 'darwin':
-+        additional_osx_libraries = ['python'+sysconfig.get_config_vars('BLDLIBRARY')[0].split('python')[1]]
++        additional_osx_libraries = ['python' + sysconfig.get_config_vars('BLDLIBRARY')[0].split('python')[1]]
 +        libraries += additional_osx_libraries
 +        libraries_jpeg12 += additional_osx_libraries
 +
@@ -102,6 +109,19 @@
 +        )
 +    ]
 +
++if libraries_jpegls:
++    ext_modules += [
++        Extension(
++            'imagecodecs._jpegls',
++            ['imagecodecs/_jpegls.pyx'],
++            include_dirs=[numpy.get_include(), 'imagecodecs'] + includes_jpegls,
++            libraries=libraries_jpegls,
++            define_macros=define_macros,
++            extra_link_args=['-lstdc++'] + extra_link_args,
++        )
++    ]
++
++
 +setup_args = dict(
 +    name='imagecodecs',
 +    version=version,
@@ -112,9 +132,12 @@
 +    url='https://www.lfd.uci.edu/~gohlke/',
 +    python_requires='>=2.7',
 +    install_requires=['numpy>=%s' % numpy_required],
-+    tests_require=['pytest', 'blosc', 'zstd', 'lz4', 'python-lzf'],
++    extras_require={'all': ['matplotlib>=2.2', 'tifffile>=2018.10.18']},
++    tests_require=['pytest', 'tifffile', 'blosc', 'zstd', 'lz4', 'python-lzf'],
 +    packages=['imagecodecs'],
 +    package_data={'imagecodecs': ['licenses/*']},
++    entry_points={'console_scripts': [
++        'imagecodecs=imagecodecs.__main__:main']},
 +    license='BSD',
 +    zip_safe=False,
 +    platforms=['any'],
